@@ -1,10 +1,20 @@
-package com.nimbleways.springboilerplate.entities;
+package com.nimbleways.springboilerplate.repository.entity;
 
-import lombok.*;
+import com.nimbleways.springboilerplate.domain.ProductType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
-
-import javax.persistence.*;
 
 @Entity
 @Getter
@@ -12,7 +22,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "products")
-public class Product {
+public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,8 +34,9 @@ public class Product {
     @Column(name = "available")
     private Integer available;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private String type;
+    private ProductType type;
 
     @Column(name = "name")
     private String name;
