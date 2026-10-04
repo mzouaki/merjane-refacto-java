@@ -20,6 +20,7 @@ public class ProductInventoryManager {
         // double check available stock to not only rely on service code and detect bugs
         if (availableStock > 0) {
             product.setAvailableStock(availableStock - 1);
+            saveProduct(product);
         } else {
             log.warn("Trying to decrement stock <= 0");
         }
