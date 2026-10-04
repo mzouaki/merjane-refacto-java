@@ -3,11 +3,10 @@ package com.nimbleways.springboilerplate.service.handler;
 import com.nimbleways.springboilerplate.domain.Product;
 import com.nimbleways.springboilerplate.service.NotificationService;
 import com.nimbleways.springboilerplate.service.manager.ProductInventoryManager;
+import com.nimbleways.springboilerplate.service.validator.ProductAvailabilityValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import static com.nimbleways.springboilerplate.service.validator.ProductAvailabilityValidator.isAvailable;
 
 @Service
 @Slf4j
@@ -18,7 +17,7 @@ public class NormalProductHandler implements ProductHandler {
 
     @Override
     public void handle(Product product) {
-        if (isAvailable(product)) {
+        if (ProductAvailabilityValidator.isAvailable(product)) {
             log.debug("Normal product {} is available, processing it", product.getName());
             productInventoryManager.decrementStock(product);
         } else {

@@ -1,4 +1,4 @@
-package com.nimbleways.springboilerplate.controllers;
+package com.nimbleways.springboilerplate.controller;
 
 import com.nimbleways.springboilerplate.repository.OrderRepository;
 import com.nimbleways.springboilerplate.repository.ProductRepository;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Which allows a better performance and needs to do less mocks
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MyControllerIntegrationTests {
+public class OrderController {
     @Autowired
     private MockMvc mockMvc;
 
@@ -72,7 +72,7 @@ public class MyControllerIntegrationTests {
         OrderEntity order = createOrder(orderItems);
         productRepository.saveAll(allProducts);
         order = orderRepository.save(order);
-        mockMvc.perform(post("/orders/{orderId}/processOrder", order.getId())
+        mockMvc.perform(post("/orders/{orderId}/process", order.getId())
                         .contentType("application/json"))
                 .andExpect(status().isOk());
         OrderEntity resultOrder = orderRepository.findById(order.getId()).get();
