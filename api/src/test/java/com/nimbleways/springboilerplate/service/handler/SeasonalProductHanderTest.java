@@ -49,6 +49,16 @@ public class SeasonalProductHanderTest {
         verify(productInventoryManager).markOutOfStock(product);
     }
 
+    @Test
+    public void shouldNotifyOutOfStockOnlyWhenSeasonHasNotStartedYet() {
+        LocalDate today = LocalDate.now();
+        Product product = new Product(1L, 5, 3, SEASONAL, "Watermelon", null, today.plusDays(2), today.plusDays(30));
+
+        seasonalProductHandler.handle(product);
+
+        verify(notificationService).sendOutOfStockNotification("Watermelon");
+        verifyNoInteractions(productInventoryManager);
+    }
 
     @Test
     public void shouldNotifyDelayWhenSeasonalProductIsDelayed() {
