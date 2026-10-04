@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.nimbleways.springboilerplate.domain.ProductType.NORMAL;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -38,6 +39,32 @@ public class ProductInventoryManagerTest {
         productInventoryManager.decrementStock(product);
 
         Assertions.assertThat(product.getAvailableStock()).isEqualTo(2);
+        verify(productMapper).toProductEntity(product);
+        verify(productRepository).save(productEntity);
+    }
+
+    @Test
+    public void shouldNotDecrementStockAndSave() {
+
+        Product product = new Product(1L, 15, 0, NORMAL, "RJ45 Cable", null, null, null);
+
+        productInventoryManager.decrementStock(product);
+
+        Assertions.assertThat(product.getAvailableStock()).isZero();
+        verifyNoInteractions(productMapper, productRepository);
+    }
+
+    @Test
+    public void shouldMarkProductOutOfStockAndSave() {
+
+        Product product = new Product(1L, 15, 3, NORMAL, "RJ45 Cable", null, null, null);
+        ProductEntity productEntity = new ProductEntity(1L, 15, 0, NORMAL, "RJ45 Cable", null, null, null);
+
+        when(productMapper.toProductEntity(product)).thenReturn(productEntity);
+
+        productInventoryManager.markOutOfStock(product);
+
+        Assertions.assertThat(product.getAvailableStock()).isZero();
         verify(productMapper).toProductEntity(product);
         verify(productRepository).save(productEntity);
     }
