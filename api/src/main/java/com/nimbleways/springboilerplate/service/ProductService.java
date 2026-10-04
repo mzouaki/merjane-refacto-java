@@ -1,48 +1,35 @@
 package com.nimbleways.springboilerplate.service;
 
-import com.nimbleways.springboilerplate.repository.ProductRepository;
-import com.nimbleways.springboilerplate.repository.entity.ProductEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nimbleways.springboilerplate.domain.Product;
+import com.nimbleways.springboilerplate.service.handler.ExpirableProductHandler;
+import com.nimbleways.springboilerplate.service.handler.NormalProductHandler;
+import com.nimbleways.springboilerplate.service.handler.SeasonalProductHandler;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.Set;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ProductService {
+    private final NormalProductHandler normalProductHandler;
+    private final SeasonalProductHandler seasonalProductHandler;
+    private final ExpirableProductHandler expirableProductHandler;
 
-    @Autowired
-    ProductRepository pr;
-
-    @Autowired
-    NotificationService ns;
-
-    public void notifyDelay(int leadTime, ProductEntity p) {
-        p.setLeadTime(leadTime);
-        pr.save(p);
-        ns.sendDelayNotification(leadTime, p.getName());
-    }
-
-    public void handleSeasonalProduct(ProductEntity p) {
-        if (LocalDate.now().plusDays(p.getLeadTime()).isAfter(p.getSeasonEndDate())) {
-            ns.sendOutOfStockNotification(p.getName());
-            p.setAvailableStock(0);
-            pr.save(p);
-        } else if (p.getSeasonStartDate().isAfter(LocalDate.now())) {
-            ns.sendOutOfStockNotification(p.getName());
-            pr.save(p);
-        } else {
-            notifyDelay(p.getLeadTime(), p);
+    public void processProducts(Set<Product> products) {
+        if (products == null || products.isEmpty()) {
+            log.warn("Order without product is sent, abort");
+            return;
         }
-    }
-
-    public void handleExpiredProduct(ProductEntity p) {
-        if (p.getAvailableStock() > 0 && p.getExpiryDate().isAfter(LocalDate.now())) {
-            p.setAvailableStock(p.getAvailableStock() - 1);
-            pr.save(p);
-        } else {
-            ns.sendExpirationNotification(p.getName(), p.getExpiryDate());
-            p.setAvailableStock(0);
-            pr.save(p);
-        }
+        products.forEach(product -> {
+            log.info("Processing product {} of type {}", product.getName(), product.getType());
+            switch (product.getType()) {
+                case NORMAL -> normalProductHandler.handle(product);
+                case SEASONAL -> seasonalProductHandler.handle(product);
+                case EXPIRABLE -> expirableProductHandler.handle(product);
+            }
+        });
     }
 }
