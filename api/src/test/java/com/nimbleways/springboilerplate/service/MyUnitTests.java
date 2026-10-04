@@ -1,4 +1,4 @@
-package com.nimbleways.springboilerplate.services.implementations;
+package com.nimbleways.springboilerplate.service;
 
 import com.nimbleways.springboilerplate.repository.ProductRepository;
 import com.nimbleways.springboilerplate.repository.entity.ProductEntity;
@@ -35,7 +35,7 @@ public class MyUnitTests {
         productService.notifyDelay(product.getLeadTime(), product);
 
         // THEN
-        assertEquals(0, product.getAvailable());
+        assertEquals(0, product.getAvailableStock());
         assertEquals(15, product.getLeadTime());
         Mockito.verify(productRepository, Mockito.times(1)).save(product);
         Mockito.verify(notificationService, Mockito.times(1)).sendDelayNotification(product.getLeadTime(), product.getName());

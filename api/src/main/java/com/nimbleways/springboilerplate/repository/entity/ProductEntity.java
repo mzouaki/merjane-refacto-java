@@ -32,7 +32,7 @@ public class ProductEntity {
     private Integer leadTime;
 
     @Column(name = "available")
-    private Integer available;
+    private Integer availableStock;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")

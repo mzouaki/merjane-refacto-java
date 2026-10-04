@@ -4,7 +4,7 @@ import com.nimbleways.springboilerplate.repository.OrderRepository;
 import com.nimbleways.springboilerplate.repository.ProductRepository;
 import com.nimbleways.springboilerplate.repository.entity.OrderEntity;
 import com.nimbleways.springboilerplate.repository.entity.ProductEntity;
-import com.nimbleways.springboilerplate.services.implementations.NotificationService;
+import com.nimbleways.springboilerplate.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

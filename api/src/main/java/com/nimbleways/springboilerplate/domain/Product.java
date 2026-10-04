@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Product {
     private Long id;
     private Integer leadTime;
-    private Integer available;
+    private Integer availableStock;
     private ProductType type;
     private String name;
     private LocalDate expiryDate;

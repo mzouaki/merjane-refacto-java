@@ -1,4 +1,4 @@
-package com.nimbleways.springboilerplate.services.implementations;
+package com.nimbleways.springboilerplate.service;
 
 import com.nimbleways.springboilerplate.repository.ProductRepository;
 import com.nimbleways.springboilerplate.repository.entity.ProductEntity;
@@ -25,7 +25,7 @@ public class ProductService {
     public void handleSeasonalProduct(ProductEntity p) {
         if (LocalDate.now().plusDays(p.getLeadTime()).isAfter(p.getSeasonEndDate())) {
             ns.sendOutOfStockNotification(p.getName());
-            p.setAvailable(0);
+            p.setAvailableStock(0);
             pr.save(p);
         } else if (p.getSeasonStartDate().isAfter(LocalDate.now())) {
             ns.sendOutOfStockNotification(p.getName());
@@ -36,12 +36,12 @@ public class ProductService {
     }
 
     public void handleExpiredProduct(ProductEntity p) {
-        if (p.getAvailable() > 0 && p.getExpiryDate().isAfter(LocalDate.now())) {
-            p.setAvailable(p.getAvailable() - 1);
+        if (p.getAvailableStock() > 0 && p.getExpiryDate().isAfter(LocalDate.now())) {
+            p.setAvailableStock(p.getAvailableStock() - 1);
             pr.save(p);
         } else {
             ns.sendExpirationNotification(p.getName(), p.getExpiryDate());
-            p.setAvailable(0);
+            p.setAvailableStock(0);
             pr.save(p);
         }
     }
