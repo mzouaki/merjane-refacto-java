@@ -25,6 +25,6 @@ public class ProductAvailabilityValidator {
     }
 
     public boolean notInSeason(Product product, LocalDate today) {
-        return product.getSeasonEndDate().isAfter(today);
+        return product.getSeasonStartDate().isAfter(today);
     }
 }
